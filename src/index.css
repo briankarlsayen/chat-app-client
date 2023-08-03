@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+textarea {
+  resize: none;
+}
+
+h3 {
+  @apply text-lg font-semibold;
+}
+
+.btn-blue {
+  @apply bg-blue-600 rounded-md p-2 text-white hover:bg-blue-800;
+}
+
+.sidebar-item {
+  @apply p-4 hover:bg-gray-200 cursor-pointer;
+}
