@@ -4,6 +4,7 @@ import { userToken } from '../config/userToken';
 import { channelStore } from '../store/ChannelStore';
 
 export default function SelectChannelForm({ connection }: any) {
+  console.log('selectedChannel');
   const defaultInput = {
     username: '',
     channel: '',

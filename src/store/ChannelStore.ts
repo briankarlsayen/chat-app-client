@@ -29,7 +29,7 @@ interface IJoinChannel extends IZustand {
 
 const channelDetails = {
   channels: [] as IChannel[],
-  selectedChannel: {} as IChannel,
+  selectedChannel: null as any,
 };
 
 const displayChannels = ({ get }: IZustand) => {

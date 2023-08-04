@@ -123,7 +123,7 @@ const SideBar = ({ channels, pickChannel, selectedChannel }: any) => {
               key={channel._id}
               onClick={() => pickChannel(channel)}
               className={
-                channel.label === selectedChannel.label ? 'bg-gray-200' : ''
+                channel.label === selectedChannel?.label ? 'bg-gray-200' : ''
               }
             >
               <Channel {...channel} />
@@ -141,6 +141,7 @@ const Content = ({
   selectedChannel,
   handleLeaveChannel,
 }: any) => {
+  console.log('selectedChannel', selectedChannel);
   return (
     <div className='w-full h-screen'>
       <Header
