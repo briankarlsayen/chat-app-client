@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function Header({ title, isChannel, handleLeaveChannel }: any) {
   return (
     <div className='bg-blue-600 h-16 items-center flex pl-4 shadow-md justify-between'>
