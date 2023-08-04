@@ -1,3 +1,5 @@
+import { formatHourSec } from '../utilities/formatTime';
+
 export const messageChannelData = [
   {
     channel: 'room1',
@@ -6,19 +8,19 @@ export const messageChannelData = [
         _id: '1',
         name: 'popo',
         message: 'this is it',
-        createdAt: '10-05-23',
+        createdAt: '2023-08-03T06:43:04.697Z',
       },
       {
         _id: '2',
         name: 'ssss',
         message: 'this is itaaaaaa',
-        createdAt: '10-05-23',
+        createdAt: '2023-07-04T06:43:04.697Z',
       },
       {
         _id: '3',
         name: 'popo-asdas',
         message: 'this is iasdast',
-        createdAt: '10-05-23',
+        createdAt: '2023-08-01T06:43:04.697Z',
       },
     ],
   },
@@ -29,19 +31,19 @@ export const messageChannelData = [
         _id: '1',
         name: 'pooop',
         message: 'this is it',
-        createdAt: '10-05-23',
+        createdAt: formatHourSec('2023-08-01T00:22:08.815Z'),
       },
       {
         _id: '2',
         name: 'yiii',
         message: 'this is itaa',
-        createdAt: '10-05-23',
+        createdAt: formatHourSec('2023-08-04T02:20:04.697Z'),
       },
       {
         _id: '3',
         name: 'boom',
         message: 'this iz is it',
-        createdAt: '10-05-23',
+        createdAt: formatHourSec('2023-08-03T02:20:04.697Z'),
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Input from './Input';
-import { routesPostApi } from '../api/apis';
-import { userToken } from '../utilities/token';
+import { userToken } from '../config/userToken';
+import { channelStore } from '../store/ChannelStore';
 
 export default function SelectChannelForm({ connection }: any) {
   const defaultInput = {
@@ -9,6 +9,8 @@ export default function SelectChannelForm({ connection }: any) {
     channel: '',
   };
   const [input, setInput] = useState(defaultInput);
+
+  const { joinChannel } = channelStore((state) => state);
 
   const handleEnter = async (e: any) => {
     e.preventDefault();
@@ -19,10 +21,7 @@ export default function SelectChannelForm({ connection }: any) {
         name: input.username,
       };
       setInput(defaultInput);
-      await routesPostApi({
-        routeName: '/channels',
-        params,
-      });
+      joinChannel({ ...params });
       connection.data.emit('join-room', input.channel);
     } catch (error) {
       console.log('error', error);

@@ -9,11 +9,10 @@ interface PApi {
 
 interface PErrorAlert {
   status: number;
-  message: string | any;
+  message: any;
 }
 
 const apiErrorAlert = (params: PErrorAlert) => {
-  console.log('params', params);
   switch (params.status) {
     case 204:
       Toast.fire({ icon: 'error', title: 'Server not responding' });
@@ -94,7 +93,6 @@ export const routesGetApi = async (props: PApi) => {
   return api
     .get(props.routeName, props.config)
     .then((res: any) => {
-      console.log('res1', res);
       return res;
     })
     .catch((err) => {

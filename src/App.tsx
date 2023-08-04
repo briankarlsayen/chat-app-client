@@ -4,15 +4,9 @@ import { useState, useEffect } from 'react';
 import SelectChannelForm from './components/SelectChannelForm';
 import ChannelContent from './components/ChannelContent';
 import connectToSocket from './config/socket';
-import { generateUUID } from './utilities/generator';
-import { routesGetApi, routesPostApi, routesPutApi } from './api/apis';
 import { channelMessagesStore } from './store/MessageStore';
-
-interface IChannel {
-  _id: number;
-  label: string;
-}
-
+import { initializeUserToken } from './config/userToken';
+import { channelStore } from './store/ChannelStore';
 interface Socket {
   on(event: string, callback: (data: any) => void): any;
   emit(event: string, data: any): any;
@@ -25,15 +19,6 @@ interface SocketConnect {
   data?: Socket;
 }
 
-interface IUser {
-  name: string;
-  token: string;
-}
-
-interface IChannelDetails {
-  channel: string;
-}
-
 export interface IMessage {
   _id: string;
   name: string;
@@ -42,11 +27,14 @@ export interface IMessage {
 }
 
 function App() {
-  const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
+  const {
+    storeChannels,
+    channels,
+    pickChannel,
+    selectedChannel,
+    leaveChannel,
+  } = channelStore((state) => state);
   const [connection, setConnection] = useState<SocketConnect>();
-  const [channels, setChannels] = useState([]);
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [channelDetails, setChannelDetails] = useState<IChannelDetails>();
   const { createMessage } = channelMessagesStore((state) => state);
 
   const connected = async () => {
@@ -55,50 +43,19 @@ function App() {
     setConnection(sc);
     if (sc?.data?.connected) {
       sc?.data?.on('message', (socketMessage) => {
-        console.log('socket message', socketMessage);
         createMessage({
           channel: socketMessage.channel,
           message: { ...socketMessage },
         });
-        // setMessages((prevMsg: any) => [...prevMsg, log]);
       });
     } else {
       console.log('Unable to connect socket');
     }
   };
 
-  const fetchChannels = async (userToken: string) => {
-    return await routesGetApi({ routeName: `/channels/${userToken}` });
-  };
-
   const saveUserToken = async () => {
-    const tokenExist = localStorage.getItem('userToken');
-    if (!tokenExist) {
-      let token = generateUUID();
-      localStorage.setItem('userToken', generateUUID());
-      const { data } = await fetchChannels(token);
-      setChannels(data);
-    } else {
-      const { data } = await fetchChannels(tokenExist);
-      setChannels(data);
-    }
-  };
-
-  const fetchChannelDetails = async () => {
-    if (!selectedChannel) return;
-    try {
-      const params = {
-        label: selectedChannel?.label,
-        token: localStorage.getItem('userToken'),
-      };
-      const response = await routesPostApi({
-        routeName: '/channels/details',
-        params,
-      });
-      setChannelDetails(response.data);
-    } catch (error) {
-      console.log('error', error);
-    }
+    const tokenExist = initializeUserToken();
+    if (tokenExist) storeChannels();
   };
 
   const joinSaveChannels = () => {
@@ -118,40 +75,30 @@ function App() {
     joinSaveChannels();
   }, [channels, connection]);
 
-  useEffect(() => {
-    fetchChannelDetails();
-  }, [selectedChannel]);
-
   const handleSendMessage = (message: string) => {
     const formatMessage = {
       message,
-      user: channelDetails?.name,
-      channel: channelDetails?.label,
+      user: selectedChannel?.name,
+      channel: selectedChannel?.label,
     };
-    console.log('send...');
     connection?.data?.emit('send-chat', formatMessage);
   };
 
   const handleLeaveChannel = async () => {
-    console.log('leave room', selectedChannel?.label);
     if (selectedChannel?.label) {
-      const params = {
-        token: localStorage.getItem('userToken'),
-      };
+      await leaveChannel();
       connection?.data?.emit('leave-room', selectedChannel?.label);
-      await routesPutApi({
-        routeName: `/channels/leave/${selectedChannel?.label}`,
-        params,
-      });
     }
   };
 
   return (
     <div className='flex h-screen'>
-      <SideBar channels={channels} setSelectedChannel={setSelectedChannel} />
+      <SideBar
+        channels={channels}
+        pickChannel={pickChannel}
+        selectedChannel={selectedChannel}
+      />
       <Content
-        messages={messages}
-        channelDetails={channelDetails}
         selectedChannel={selectedChannel}
         connection={connection}
         handleSendMessage={handleSendMessage}
@@ -161,18 +108,24 @@ function App() {
   );
 }
 
-const SideBar = ({ channels, setSelectedChannel }: any) => {
+const SideBar = ({ channels, pickChannel, selectedChannel }: any) => {
   return (
     <div className='max-w-xs border-r-2 w-full'>
       <Header title={'CHATAPP'} />
 
       {channels ? (
         <ul>
-          <li className='sidebar-item' onClick={() => setSelectedChannel(null)}>
+          <li className='sidebar-item' onClick={() => pickChannel(null)}>
             Enter a channel
           </li>
           {channels.map((channel: any) => (
-            <li key={channel._id} onClick={() => setSelectedChannel(channel)}>
+            <li
+              key={channel._id}
+              onClick={() => pickChannel(channel)}
+              className={
+                channel.label === selectedChannel.label ? 'bg-gray-200' : ''
+              }
+            >
               <Channel {...channel} />
             </li>
           ))}
@@ -182,35 +135,21 @@ const SideBar = ({ channels, setSelectedChannel }: any) => {
   );
 };
 
-interface IChannelDetails {
-  label: string;
-  name: string;
-  token: string;
-}
-
 const Content = ({
-  selectedChannel,
   connection,
   handleSendMessage,
-  channelDetails,
-  messages,
+  selectedChannel,
   handleLeaveChannel,
-  ...props
 }: any) => {
   return (
     <div className='w-full h-screen'>
       <Header
-        title={channelDetails?.label ?? 'Enter a channel'}
+        title={selectedChannel?.label ?? 'Enter a channel'}
         isChannel={true}
         handleLeaveChannel={handleLeaveChannel}
       />
       {selectedChannel ? (
-        <ChannelContent
-          messages={messages}
-          connection={connection}
-          selectedChannel={selectedChannel}
-          handleSendMessage={handleSendMessage}
-        />
+        <ChannelContent handleSendMessage={handleSendMessage} />
       ) : (
         <div>
           <SelectChannelForm connection={connection} />

@@ -1,18 +1,12 @@
 import MultiInput from './MultiInput';
-import moment from 'moment';
 import { useState } from 'react';
 import { IMessage } from '../App';
 import { channelMessagesStore } from '../store/MessageStore';
+import { channelStore } from '../store/ChannelStore';
 
-export default function ChannelContent({
-  conn,
-  selectedChannel,
-  messages,
-  handleSendMessage,
-}: any) {
-  const { channelMessages, displayChannelMessages } = channelMessagesStore(
-    (state) => state
-  );
+export default function ChannelContent({ handleSendMessage }: any) {
+  const { displayChannelMessages } = channelMessagesStore((state) => state);
+  const { selectedChannel } = channelStore((state) => state);
 
   const [message, setMessage] = useState('');
   const handleSubmit = (e: any) => {
@@ -20,11 +14,10 @@ export default function ChannelContent({
     handleSendMessage(message);
     setMessage('');
   };
-  console.log('messages in ch', channelMessages);
 
   return (
     <div className='flex flex-col w-full h-[calc(100vh-4rem)]'>
-      <Content messages={displayChannelMessages(selectedChannel.label)} />
+      <Content messages={displayChannelMessages(selectedChannel?.label)} />
       <div>
         <form onSubmit={handleSubmit} className='w-full flex'>
           <MultiInput
@@ -57,12 +50,11 @@ const Content = ({ messages }: IContent) => {
 };
 
 const Message = ({ name, message, createdAt }: any) => {
-  const time = moment(createdAt).format('HH:mm');
   return (
     <div className='pb-2'>
       <p className='text-blue-500'>
         @{name}
-        <span className='pl-2 text-gray-400 text-sm'>{time}</span>
+        <span className='pl-2 text-gray-400 text-sm'>{createdAt}</span>
       </p>
       <p>{message}</p>
     </div>

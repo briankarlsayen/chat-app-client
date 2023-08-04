@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { IMessage } from '../App';
 import { messageChannelData } from '../api/mock';
-import moment from 'moment';
+import { formatHourSec } from '../utilities/formatTime';
 
 interface IChannelMessage {
   channel?: string;
@@ -35,14 +35,15 @@ const findChannelIndx = ({ channel, chMessages }: IChannelMessage) => {
 };
 
 const createMessage = ({ set, get, value }: ICreateMessage) => {
-  console.log('value', value);
+  const formattedMsg = {
+    ...value?.message,
+    createdAt: formatHourSec(value?.message?.createdAt),
+  };
   let chMessages = get().channelMessages;
-  console.log('chMessages', chMessages);
   const idx = findChannelIndx({ channel: value?.channel, chMessages });
-  console.log('idx', idx);
   if (idx > -1) {
     const msgList = chMessages[idx].messages;
-    const newMsgs = [...msgList, value?.message];
+    const newMsgs = [...msgList, formattedMsg];
     const newChMessages = [...chMessages];
     newChMessages[idx].messages = newMsgs;
     return set({ channelMessages: [...newChMessages] });
@@ -51,10 +52,8 @@ const createMessage = ({ set, get, value }: ICreateMessage) => {
       channel: value?.channel,
       messages: [
         {
-          name: value?.message?.name,
-          message: value?.message?.message,
-          _id: '121',
-          createdAt: moment(value?.message?.createdAt).format('HH:mm'),
+          ...formattedMsg,
+          // createdAt: moment(value?.message?.createdAt).format('HH:mm'),
         },
       ],
     };
@@ -70,10 +69,10 @@ const displayChMessages = ({ get, value }: IDisplayChannelMessages) => {
   return idx > -1 ? chMessages[idx]?.messages : null;
 };
 
-const accountLoginStoreObject = (set: any, get: any) => ({
+const messageStoreObject = (set: any, get: any) => ({
   channelMessages,
   createMessage: (value: IValue) => createMessage({ set, get, value }),
-  displayChannelMessages: (value: string) => displayChMessages({ get, value }),
+  displayChannelMessages: (value?: string) => displayChMessages({ get, value }),
 });
 
-export const channelMessagesStore = create(accountLoginStoreObject);
+export const channelMessagesStore = create(messageStoreObject);
