@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { url } from '../config/server';
 
 const instance = axios.create({
-  baseURL: 'https://chat-app-server-nu-henna.vercel.app',
+  baseURL: url,
   // baseURL: 'http://localhost:5900',
 });
 

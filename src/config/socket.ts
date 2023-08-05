@@ -1,11 +1,12 @@
 import { io } from 'socket.io-client';
+import { url } from './server';
 
 const delay = (delayInms: number) => {
   return new Promise((resolve) => setTimeout(resolve, delayInms));
 };
 
 export default async function connectSocket() {
-  const socketUrl = 'http://localhost:5900';
+  const socketUrl = url;
   const socketRes = io(socketUrl, {
     transports: ['websocket', 'polling'],
   });
@@ -15,6 +16,7 @@ export default async function connectSocket() {
     socketRes.disconnect();
     return new Error('Unable to connect to socket');
   }
+  console.log('socket connected')
   const defaultRooms = ['room1', 'room2', 'room3'];
   socketRes.emit('join-room', defaultRooms);
   return {
