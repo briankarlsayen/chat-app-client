@@ -17,8 +17,6 @@ export default async function connectSocket() {
     return new Error('Unable to connect to socket');
   }
   console.log('socket connected')
-  const defaultRooms = ['room1', 'room2', 'room3'];
-  socketRes.emit('join-room', defaultRooms);
   return {
     success: true,
     data: socketRes,

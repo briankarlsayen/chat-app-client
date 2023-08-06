@@ -4,7 +4,6 @@ import { userToken } from '../config/userToken';
 import { channelStore } from '../store/ChannelStore';
 
 export default function SelectChannelForm({ connection }: any) {
-  console.log('selectedChannel');
   const defaultInput = {
     username: '',
     channel: '',
@@ -23,7 +22,15 @@ export default function SelectChannelForm({ connection }: any) {
       };
       setInput(defaultInput);
       joinChannel({ ...params });
-      connection.data.emit('join-room', input.channel);
+
+      const formatMessage = {
+        message: `${input.username} has joined`,
+        user: input.username,
+        channel: input.channel,
+        type: 'notification',
+      };
+      connection?.data?.emit('send-chat', formatMessage);
+      connection?.data?.emit('join-room', input.channel);
     } catch (error) {
       console.log('error', error);
     }

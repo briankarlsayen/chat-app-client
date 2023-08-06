@@ -23,13 +23,20 @@ interface IJoinProps {
   name?: string;
 }
 
+interface SelectedChannel {
+  _id: string
+  label: string
+  name: string
+  token: string
+}
+
 interface IJoinChannel extends IZustand {
   value?: IJoinProps;
 }
 
 const channelDetails = {
   channels: [] as IChannel[],
-  selectedChannel: null as any,
+  selectedChannel: null as SelectedChannel | null,
 };
 
 const displayChannels = ({ get }: IZustand) => {
@@ -39,14 +46,21 @@ const displayChannels = ({ get }: IZustand) => {
 const storeChannels = async ({ set }: any) => {
   await routesGetApi({ routeName: `/channels/${userToken}` }).then(
     ({ data }: any) => {
-      return set({
-        channels: data.map((e: any) => {
+      const chList = data.map((e: IChannel) => {
+        return {
+          _id: e._id,
+          label: e.label,
+        };
+      })
+      set({
+        channels: data.map((e: IChannel) => {
           return {
             _id: e._id,
             label: e.label,
           };
         }),
       });
+      return chList
     }
   );
 };

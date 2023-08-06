@@ -7,6 +7,7 @@ import connectToSocket from './config/socket';
 import { channelMessagesStore } from './store/MessageStore';
 import { initializeUserToken } from './config/userToken';
 import { channelStore } from './store/ChannelStore';
+import Loading from './components/Loading';
 interface Socket {
   on(event: string, callback: (data: any) => void): any;
   emit(event: string, data: any): any;
@@ -20,10 +21,11 @@ interface SocketConnect {
 }
 
 export interface IMessage {
-  _id: string;
+  _id?: string;
   name: string;
   message: string;
   createdAt: string;
+  type?: string;
 }
 
 function App() {
@@ -33,19 +35,29 @@ function App() {
     pickChannel,
     selectedChannel,
     leaveChannel,
+    displaySelectedChannel,
   } = channelStore((state) => state);
+  const [loading, setLoading] = useState(true);
   const [connection, setConnection] = useState<SocketConnect>();
-  const { createMessage } = channelMessagesStore((state) => state);
+  const {
+    createMessage,
+    displayChannelDetails,
+    initializeChannels,
+    readChMessages,
+  } = channelMessagesStore((state) => state);
 
   const connected = async () => {
     const sc: SocketConnect = await connectToSocket();
     setConnection(undefined);
     setConnection(sc);
     if (sc?.data?.connected) {
+      console.log('selectedChannel1', displaySelectedChannel());
+      setLoading(false);
       sc?.data?.on('message', (socketMessage) => {
         createMessage({
           channel: socketMessage.channel,
           message: { ...socketMessage },
+          selectedChannel: displaySelectedChannel(),
         });
       });
     } else {
@@ -62,6 +74,9 @@ function App() {
     if (connection?.success) {
       const list = channels.map((channel: any) => channel?.label);
       connection?.data?.emit('join-room', list);
+      console.log('joining room');
+      console.log('channels', channels);
+      initializeChannels(channels);
     }
   };
 
@@ -80,23 +95,36 @@ function App() {
       message,
       user: selectedChannel?.name,
       channel: selectedChannel?.label,
+      type: 'chat',
     };
     connection?.data?.emit('send-chat', formatMessage);
+    // readChMessages(selectedChannel?.label);
   };
 
   const handleLeaveChannel = async () => {
     if (selectedChannel?.label) {
       await leaveChannel();
       connection?.data?.emit('leave-room', selectedChannel?.label);
+      const formatMessage = {
+        message: `${selectedChannel.name} has left`,
+        user: selectedChannel.name,
+        channel: selectedChannel.label,
+        type: 'notification',
+      };
+      connection?.data?.emit('send-chat', formatMessage);
     }
   };
 
-  return (
+  return loading ? (
+    <Loading loading={true} />
+  ) : (
     <div className='flex h-screen'>
       <SideBar
         channels={channels}
         pickChannel={pickChannel}
         selectedChannel={selectedChannel}
+        displayChannelDetails={displayChannelDetails}
+        readChMessages={readChMessages}
       />
       <Content
         selectedChannel={selectedChannel}
@@ -108,25 +136,37 @@ function App() {
   );
 }
 
-const SideBar = ({ channels, pickChannel, selectedChannel }: any) => {
+const SideBar = ({
+  channels,
+  pickChannel,
+  selectedChannel,
+  displayChannelDetails,
+  readChMessages,
+}: any) => {
+  const handleSelectChannel = (channel: any) => {
+    pickChannel(channel);
+    readChMessages(channel?.label);
+  };
   return (
     <div className='max-w-xs border-r-2 w-full'>
       <Header title={'CHATAPP'} />
-
       {channels ? (
         <ul>
-          <li className='sidebar-item' onClick={() => pickChannel(null)}>
+          <li className='sidebar-item' onClick={handleSelectChannel}>
             Enter a channel
           </li>
           {channels.map((channel: any) => (
             <li
               key={channel._id}
-              onClick={() => pickChannel(channel)}
+              onClick={() => handleSelectChannel(channel)}
               className={
                 channel.label === selectedChannel?.label ? 'bg-gray-200' : ''
               }
             >
-              <Channel {...channel} />
+              <Channel
+                displayChannelDetails={displayChannelDetails}
+                {...channel}
+              />
             </li>
           ))}
         </ul>
@@ -141,7 +181,6 @@ const Content = ({
   selectedChannel,
   handleLeaveChannel,
 }: any) => {
-  console.log('selectedChannel', selectedChannel);
   return (
     <div className='w-full h-screen'>
       <Header
@@ -149,7 +188,7 @@ const Content = ({
         isChannel={true}
         handleLeaveChannel={handleLeaveChannel}
       />
-      {selectedChannel ? (
+      {selectedChannel?._id ? (
         <ChannelContent handleSendMessage={handleSendMessage} />
       ) : (
         <div>
