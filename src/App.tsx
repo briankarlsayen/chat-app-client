@@ -52,7 +52,6 @@ function App() {
     setConnection(undefined);
     setConnection(sc);
     if (sc?.data?.connected) {
-      console.log('selectedChannel1', displaySelectedChannel());
       setLoading(false);
       sc?.data?.on('message', (socketMessage) => {
         createMessage({
@@ -75,14 +74,11 @@ function App() {
     if (connection?.success) {
       const list = channels.map((channel: any) => channel?.label);
       connection?.data?.emit('join-room', list);
-      console.log('joining room');
-      console.log('channels', channels);
       initializeChannels(channels);
     }
   };
 
   useEffect(() => {
-    console.log('connecting socket');
     connected();
     saveUserToken();
   }, []);

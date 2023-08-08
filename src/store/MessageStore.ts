@@ -9,14 +9,14 @@ interface IChannelMessageProps extends IChannelMessageDetails {
 interface IChannelMessageDetails {
   channel?: string;
   messages?: IMessage[];
-  unread?: number
+  unread?: number;
 }
 
 interface IValue {
   channel: string;
   message?: IMessage;
   name?: string;
-  selectedChannel?: any
+  selectedChannel?: any;
 }
 
 interface IZustand {
@@ -39,14 +39,13 @@ const findChannelIndx = ({ channel, chMessages }: IChannelMessageProps) => {
 };
 
 const createMessage = ({ set, get, value }: ICreateMessage) => {
-  console.log('value', value)
   const formattedMsg = {
     ...value?.message,
     createdAt: formatHourSec(value?.message?.createdAt),
   };
   let chMessages = get().channelMessages;
   const idx = findChannelIndx({ channel: value?.channel, chMessages });
-  const isInRoom = value?.channel === value?.selectedChannel?.label
+  const isInRoom = value?.channel === value?.selectedChannel?.label;
   // * channel already exist
   if (idx > -1) {
     const msgList = chMessages[idx].messages;
@@ -70,12 +69,12 @@ const createMessage = ({ set, get, value }: ICreateMessage) => {
 };
 
 interface InitializeValue {
-  label?: string
-  _id?: string
+  label?: string;
+  _id?: string;
 }
 
 interface IInitialChProps extends IZustand {
-  value: InitializeValue[]
+  value: InitializeValue[];
 }
 
 const initializeChannels = ({ set, value }: IInitialChProps) => {
@@ -83,11 +82,11 @@ const initializeChannels = ({ set, value }: IInitialChProps) => {
     return {
       channel: val?.label,
       unread: 0,
-      messages: []
-    }
-  })
-  set({ channelMessages: initialChList })
-}
+      messages: [],
+    };
+  });
+  set({ channelMessages: initialChList });
+};
 
 const displayChDetails = ({ get, value }: IDisplayChannelMessages) => {
   let chMessages = get().channelMessages;
@@ -97,29 +96,26 @@ const displayChDetails = ({ get, value }: IDisplayChannelMessages) => {
 
 const readChMessages = ({ set, get, value }: IDisplayChannelMessages) => {
   let chMessages = get().channelMessages;
-  if (!value) return
-  const newChMessages = [...chMessages]
+  if (!value) return;
+  const newChMessages = [...chMessages];
   const idx = findChannelIndx({ channel: value, chMessages: newChMessages });
-  console.log('chMessages[idx]', chMessages[idx])
-  const data = newChMessages[idx]
+  const data = newChMessages[idx];
   const newData = {
     channel: data?.channel,
     messages: data?.messages,
-    unread: Number(0)
-  }
-  console.log('newData', newData)
-  newChMessages[idx] = newData
-  console.log('newChMessages', newChMessages)
-  set({ channelMessages: newChMessages })
-}
+    unread: Number(0),
+  };
+  newChMessages[idx] = newData;
+  set({ channelMessages: newChMessages });
+};
 
 const messageStoreObject = (set: any, get: any) => ({
   channelMessages,
   createMessage: (value: IValue) => createMessage({ set, get, value }),
   displayChannelDetails: (value?: string) => displayChDetails({ get, value }),
-  initializeChannels: (value: InitializeValue[]) => initializeChannels({ set, value }),
+  initializeChannels: (value: InitializeValue[]) =>
+    initializeChannels({ set, value }),
   readChMessages: (value?: string) => readChMessages({ set, get, value }),
-
 });
 
 export const channelMessagesStore = create(messageStoreObject);

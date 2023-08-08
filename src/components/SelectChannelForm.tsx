@@ -15,7 +15,6 @@ export default function SelectChannelForm({ connection }: any) {
   const handleEnter = async (e: any) => {
     e.preventDefault();
     try {
-      console.log('joinn', userToken);
       const params = {
         label: input.channel,
         token: userToken,
