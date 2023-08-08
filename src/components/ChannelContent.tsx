@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IMessage } from '../App';
 import { channelMessagesStore } from '../store/MessageStore';
 import { channelStore } from '../store/ChannelStore';
+import { FaRegPaperPlane } from 'react-icons/fa';
 
 export default function ChannelContent({ handleSendMessage }: any) {
   const { displayChannelDetails } = channelMessagesStore((state) => state);
@@ -12,8 +13,10 @@ export default function ChannelContent({ handleSendMessage }: any) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    handleSendMessage(message);
-    setMessage('');
+    if (message) {
+      handleSendMessage(message);
+      setMessage('');
+    }
   };
 
   useEffect(() => {
@@ -33,25 +36,38 @@ export default function ChannelContent({ handleSendMessage }: any) {
     }
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [displayChannelDetails(selectedChannel?.label)?.messages]);
+
   return (
     <div className='flex flex-col w-full h-[calc(100vh-4rem)]'>
       <Content
         messages={displayChannelDetails(selectedChannel?.label)?.messages}
         containerRef={containerRef}
       />
-      <div>
+      <div className='px-4'>
         <form
           onSubmit={handleSubmit}
           onKeyDown={handleKeyDown}
-          className='w-full flex'
+          className='w-full flex gap-2 border-2 bg-slate-100 rounded-md py-2 px-4'
         >
           <MultiInput
             value={message}
             onChange={(e: any) => setMessage(e.target.value)}
+            placeholder={'Ctrl + Enter to send'}
           />
-          <button type='submit' className='bg-blue-600 px-4 text-white'>
+          {/* <button type='submit' className='primary-blue-bg px-4 text-white'>
             Send
-          </button>
+          </button> */}
+          <div className='flex pt-2'>
+            <button
+              type='submit'
+              className='h-fit p-2 rounded-full primary-blue-bg'
+            >
+              <FaRegPaperPlane color='white' />
+            </button>
+          </div>
         </form>
       </div>
     </div>

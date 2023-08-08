@@ -8,6 +8,7 @@ import { channelMessagesStore } from './store/MessageStore';
 import { initializeUserToken } from './config/userToken';
 import { channelStore } from './store/ChannelStore';
 import Loading from './components/Loading';
+import ChatLogo from './assets/chat-app.png';
 interface Socket {
   on(event: string, callback: (data: any) => void): any;
   emit(event: string, data: any): any;
@@ -98,7 +99,6 @@ function App() {
       type: 'chat',
     };
     connection?.data?.emit('send-chat', formatMessage);
-    // readChMessages(selectedChannel?.label);
   };
 
   const handleLeaveChannel = async () => {
@@ -149,28 +149,31 @@ const SideBar = ({
   };
   return (
     <div className='max-w-xs border-r-2 w-full'>
-      <Header title={'CHATAPP'} />
-      {channels ? (
-        <ul>
-          <li className='sidebar-item' onClick={handleSelectChannel}>
-            Enter a channel
-          </li>
-          {channels.map((channel: any) => (
-            <li
-              key={channel._id}
-              onClick={() => handleSelectChannel(channel)}
-              className={
-                channel.label === selectedChannel?.label ? 'bg-gray-200' : ''
-              }
-            >
-              <Channel
-                displayChannelDetails={displayChannelDetails}
-                {...channel}
-              />
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <div className='h-16 w-full primary-blue-bg'>
+        <img src={ChatLogo} className='h-full' />
+      </div>
+      {/* <Header title={'CHATAPP'} /> */}
+      <ul>
+        <li className='sidebar-item' onClick={handleSelectChannel}>
+          Enter a channel
+        </li>
+        {channels?.length
+          ? channels?.map((channel: any) => (
+              <li
+                key={channel?._id}
+                onClick={() => handleSelectChannel(channel)}
+                className={
+                  channel?.label === selectedChannel?.label ? 'bg-gray-200' : ''
+                }
+              >
+                <Channel
+                  displayChannelDetails={displayChannelDetails}
+                  {...channel}
+                />
+              </li>
+            ))
+          : null}
+      </ul>
     </div>
   );
 };
@@ -185,7 +188,7 @@ const Content = ({
     <div className='w-full h-screen'>
       <Header
         title={selectedChannel?.label ?? 'Enter a channel'}
-        isChannel={true}
+        isChannel={!!selectedChannel?.label}
         handleLeaveChannel={handleLeaveChannel}
       />
       {selectedChannel?._id ? (

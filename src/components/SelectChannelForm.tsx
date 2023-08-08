@@ -15,6 +15,7 @@ export default function SelectChannelForm({ connection }: any) {
   const handleEnter = async (e: any) => {
     e.preventDefault();
     try {
+      console.log('joinn', userToken);
       const params = {
         label: input.channel,
         token: userToken,
@@ -55,7 +56,7 @@ export default function SelectChannelForm({ connection }: any) {
             required={true}
           />
 
-          <button type='submit' className='btn-blue'>
+          <button type='submit' className='btn-blue primary-blue-bg'>
             Enter
           </button>
         </form>
