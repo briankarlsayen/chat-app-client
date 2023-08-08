@@ -5,7 +5,11 @@ import { channelMessagesStore } from '../store/MessageStore';
 import { channelStore } from '../store/ChannelStore';
 import { FaRegPaperPlane } from 'react-icons/fa';
 
-export default function ChannelContent({ handleSendMessage }: any) {
+interface IChannelContent {
+  handleSendMessage: (value: string) => void;
+}
+
+export default function ChannelContent({ handleSendMessage }: IChannelContent) {
   const { displayChannelDetails } = channelMessagesStore((state) => state);
   const { selectedChannel } = channelStore((state) => state);
   const [message, setMessage] = useState('');

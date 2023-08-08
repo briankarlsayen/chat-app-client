@@ -6,7 +6,7 @@ import ChannelContent from './components/ChannelContent';
 import connectToSocket from './config/socket';
 import { channelMessagesStore } from './store/MessageStore';
 import { initializeUserToken } from './config/userToken';
-import { channelStore } from './store/ChannelStore';
+import { IChannel, ISelectedChannel, channelStore } from './store/ChannelStore';
 import Loading from './components/Loading';
 import ChatLogo from './assets/chat-app.png';
 interface Socket {
@@ -15,7 +15,7 @@ interface Socket {
   connected: boolean;
 }
 
-interface SocketConnect {
+export interface SocketConnect {
   message?: string;
   success?: boolean;
   data?: Socket;
@@ -72,7 +72,7 @@ function App() {
 
   const joinSaveChannels = () => {
     if (connection?.success) {
-      const list = channels.map((channel: any) => channel?.label);
+      const list = channels.map((channel) => channel?.label);
       connection?.data?.emit('join-room', list);
       initializeChannels(channels);
     }
@@ -132,14 +132,22 @@ function App() {
   );
 }
 
+interface ISideBar {
+  channels: IChannel[];
+  pickChannel: (value?: IChannel | null) => Promise<any>;
+  displayChannelDetails: () => any;
+  readChMessages: (value?: string) => void;
+  selectedChannel: ISelectedChannel | null;
+}
+
 const SideBar = ({
   channels,
   pickChannel,
   selectedChannel,
   displayChannelDetails,
   readChMessages,
-}: any) => {
-  const handleSelectChannel = (channel: any) => {
+}: ISideBar) => {
+  const handleSelectChannel = (channel?: IChannel | null) => {
     pickChannel(channel);
     readChMessages(channel?.label);
   };
@@ -148,13 +156,12 @@ const SideBar = ({
       <div className='h-16 w-full primary-blue-bg'>
         <img src={ChatLogo} className='h-full' />
       </div>
-      {/* <Header title={'CHATAPP'} /> */}
       <ul>
-        <li className='sidebar-item' onClick={handleSelectChannel}>
+        <li className='sidebar-item' onClick={() => handleSelectChannel(null)}>
           Enter a channel
         </li>
         {channels?.length
-          ? channels?.map((channel: any) => (
+          ? channels?.map((channel) => (
               <li
                 key={channel?._id}
                 onClick={() => handleSelectChannel(channel)}
@@ -174,12 +181,19 @@ const SideBar = ({
   );
 };
 
+interface IContent {
+  connection?: SocketConnect;
+  handleSendMessage: (value: string) => void;
+  selectedChannel: ISelectedChannel | null;
+  handleLeaveChannel: () => void;
+}
+
 const Content = ({
   connection,
   handleSendMessage,
   selectedChannel,
   handleLeaveChannel,
-}: any) => {
+}: IContent) => {
   return (
     <div className='w-full h-screen'>
       <Header

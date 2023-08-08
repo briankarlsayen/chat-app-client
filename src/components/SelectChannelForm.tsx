@@ -2,8 +2,15 @@ import { useState } from 'react';
 import Input from './Input';
 import { userToken } from '../config/userToken';
 import { channelStore } from '../store/ChannelStore';
+import { SocketConnect } from '../App';
 
-export default function SelectChannelForm({ connection }: any) {
+interface ISelectedChannelForm {
+  connection?: SocketConnect;
+}
+
+export default function SelectChannelForm({
+  connection,
+}: ISelectedChannelForm) {
   const defaultInput = {
     username: '',
     channel: '',

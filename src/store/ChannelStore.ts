@@ -8,7 +8,7 @@ interface IZustand {
 }
 
 interface ISetChannel extends IZustand {
-  value?: IChannel;
+  value?: IChannel | null;
 }
 
 export interface IChannel {
@@ -23,11 +23,11 @@ interface IJoinProps {
   name?: string;
 }
 
-interface SelectedChannel {
-  _id: string
-  label: string
-  name: string
-  token: string
+export interface ISelectedChannel {
+  _id: string;
+  label: string;
+  name: string;
+  token: string;
 }
 
 interface IJoinChannel extends IZustand {
@@ -36,7 +36,7 @@ interface IJoinChannel extends IZustand {
 
 const channelDetails = {
   channels: [] as IChannel[],
-  selectedChannel: null as SelectedChannel | null,
+  selectedChannel: null as ISelectedChannel | null,
 };
 
 const displayChannels = ({ get }: IZustand) => {
@@ -51,7 +51,7 @@ const storeChannels = async ({ set }: any) => {
           _id: e._id,
           label: e.label,
         };
-      })
+      });
       set({
         channels: data.map((e: IChannel) => {
           return {
@@ -60,7 +60,7 @@ const storeChannels = async ({ set }: any) => {
           };
         }),
       });
-      return chList
+      return chList;
     }
   );
 };
@@ -115,7 +115,7 @@ const channelStoreObject = (set: any, get: any) => ({
   displaySelectedChannel: () => displaySelectedCh({ get }),
   storeChannels: () => storeChannels({ set }),
   joinChannel: (value: IJoinProps) => joinChannel({ set, get, value }),
-  pickChannel: (value: IChannel) => pickChannel({ set, value }),
+  pickChannel: (value?: IChannel | null) => pickChannel({ set, value }),
   leaveChannel: () => leaveChannel({ set, get }),
 });
 
