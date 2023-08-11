@@ -50,7 +50,7 @@ export default function SelectChannelForm({
 
   return (
     <div>
-      <div className='pt-20 flex justify-center w-full h-full items-center'>
+      <div className='pt-20 flex flex-col justify-center w-full h-full items-center'>
         <form
           onSubmit={handleEnter}
           className='flex flex-col gap-4 p-4 shadow-lg w-full max-w-xl rounded-md'
@@ -74,7 +74,26 @@ export default function SelectChannelForm({
             Enter
           </button>
         </form>
+        <MessageBoard />
       </div>
     </div>
   );
 }
+
+const MessageBoard = () => {
+  return (
+    <div className='pt-10 max-w-xl'>
+      <h2 className='pb-2'>Instruction</h2>
+      <p>
+        Kindly provide your desired room username and specify the channel you
+        wish to join. Share this channel information with the individuals you
+        want to engage in a conversation with, as only users on the same channel
+        can communicate with each other. It's important to note that we do not
+        store any messages in our database;{' '}
+        <span className='italic'>
+          Note: messages are only accessible to online users in real-time.
+        </span>
+      </p>
+    </div>
+  );
+};
