@@ -1,7 +1,17 @@
 import { FaHashtag } from 'react-icons/fa';
 import { IoExit } from 'react-icons/io5';
 
-export default function Header({ title, isChannel, handleLeaveChannel }: any) {
+interface IHeader {
+  title: string;
+  isChannel: boolean;
+  handleLeaveChannel: () => void;
+}
+
+export default function Header({
+  title,
+  isChannel,
+  handleLeaveChannel,
+}: IHeader) {
   return (
     <div className='primary-blue-bg h-16 items-center flex pl-4 shadow-md justify-between'>
       <div className='flex items-center gap-1'>

@@ -1,12 +1,19 @@
 import { create } from 'zustand';
 import { IMessage } from '../App';
 import { formatHourSec } from '../utilities/formatTime';
+import { ISelectedChannel } from './ChannelStore';
 
 interface IChannelMessageProps extends IChannelMessageDetails {
   chMessages?: IChannelMessageDetails[];
 }
 
-interface IChannelMessageDetails {
+export interface IMessageStore {
+  displayChannelDetails: (
+    value?: string | undefined
+  ) => IChannelMessageDetails | null;
+}
+
+export interface IChannelMessageDetails {
   channel?: string;
   messages?: IMessage[];
   unread?: number;
@@ -16,7 +23,7 @@ interface IValue {
   channel: string;
   message?: IMessage;
   name?: string;
-  selectedChannel?: any;
+  selectedChannel?: ISelectedChannel;
 }
 
 interface IZustand {
@@ -89,7 +96,7 @@ const initializeChannels = ({ set, value }: IInitialChProps) => {
 };
 
 const displayChDetails = ({ get, value }: IDisplayChannelMessages) => {
-  let chMessages = get().channelMessages;
+  let chMessages = get().channelMessages as IChannelMessageDetails[];
   const idx = findChannelIndx({ channel: value, chMessages });
   return idx > -1 ? chMessages[idx] : null;
 };

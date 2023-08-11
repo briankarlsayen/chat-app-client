@@ -4,7 +4,10 @@ import { useState, useEffect } from 'react';
 import SelectChannelForm from './components/SelectChannelForm';
 import ChannelContent from './components/ChannelContent';
 import connectToSocket from './config/socket';
-import { channelMessagesStore } from './store/MessageStore';
+import {
+  IChannelMessageDetails,
+  channelMessagesStore,
+} from './store/MessageStore';
 import { initializeUserToken } from './config/userToken';
 import { IChannel, ISelectedChannel, channelStore } from './store/ChannelStore';
 import Loading from './components/Loading';
@@ -134,8 +137,10 @@ function App() {
 
 interface ISideBar {
   channels: IChannel[];
-  pickChannel: (value?: IChannel | null) => Promise<any>;
-  displayChannelDetails: () => any;
+  pickChannel: (value?: IChannel | null) => void;
+  displayChannelDetails: (
+    value?: string | undefined
+  ) => IChannelMessageDetails | null;
   readChMessages: (value?: string) => void;
   selectedChannel: ISelectedChannel | null;
 }

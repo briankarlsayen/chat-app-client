@@ -6,7 +6,7 @@ const delay = (delayInms: number) => {
 };
 
 export default async function connectSocket() {
-  const socketUrl = url;
+  const socketUrl = `${url}/chat-app`;
   const socketRes = io(socketUrl, {
     transports: ['websocket', 'polling'],
   });

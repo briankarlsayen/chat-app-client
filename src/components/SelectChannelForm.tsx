@@ -19,7 +19,7 @@ export default function SelectChannelForm({
 
   const { joinChannel } = channelStore((state) => state);
 
-  const handleEnter = async (e: any) => {
+  const handleEnter = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const params = {
@@ -42,6 +42,12 @@ export default function SelectChannelForm({
       console.log('error', error);
     }
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  };
+
   return (
     <div>
       <div className='pt-20 flex justify-center w-full h-full items-center'>
@@ -51,14 +57,16 @@ export default function SelectChannelForm({
         >
           <Input
             label='Username'
+            name='username'
             value={input.username}
-            onChange={(e: string) => setInput({ ...input, username: e })}
+            onChange={handleInputChange}
             required={true}
           />
           <Input
             label='Channel'
+            name='channel'
             value={input.channel}
-            onChange={(e: string) => setInput({ ...input, channel: e })}
+            onChange={handleInputChange}
             required={true}
           />
 

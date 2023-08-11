@@ -13,7 +13,7 @@ interface ISetChannel extends IZustand {
 
 export interface IChannel {
   _id?: string;
-  label?: string;
+  label: string;
   name?: string;
 }
 
@@ -102,7 +102,7 @@ const pickChannel = async ({ set, value }: ISetChannel) => {
     routeName: '/channels/details',
     params,
   });
-  return set({ selectedChannel: response.data });
+  set({ selectedChannel: response.data });
 };
 
 const displaySelectedCh = ({ get }: IZustand) => {

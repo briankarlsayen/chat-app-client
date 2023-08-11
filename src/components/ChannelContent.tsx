@@ -13,9 +13,9 @@ export default function ChannelContent({ handleSendMessage }: IChannelContent) {
   const { displayChannelDetails } = channelMessagesStore((state) => state);
   const { selectedChannel } = channelStore((state) => state);
   const [message, setMessage] = useState('');
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message) {
       handleSendMessage(message);
@@ -29,13 +29,13 @@ export default function ChannelContent({ handleSendMessage }: IChannelContent) {
 
   const scrollToBottom = () => {
     if (containerRef.current) {
-      const container = containerRef.current as any;
+      const container = containerRef.current;
       container.scrollTop = container.scrollHeight;
     }
   };
 
-  const handleKeyDown = (e: any) => {
-    if (e.keyCode === 13 && e.ctrlKey) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
       handleSubmit(e);
     }
   };
@@ -58,7 +58,7 @@ export default function ChannelContent({ handleSendMessage }: IChannelContent) {
         >
           <MultiInput
             value={message}
-            onChange={(e: any) => setMessage(e.target.value)}
+            onChange={(e) => setMessage(e.target.value)}
             placeholder={'Ctrl + Enter to send'}
           />
           {/* <button type='submit' className='primary-blue-bg px-4 text-white'>
@@ -80,7 +80,7 @@ export default function ChannelContent({ handleSendMessage }: IChannelContent) {
 
 interface IContent {
   messages?: IMessage[];
-  containerRef: any;
+  containerRef: React.RefObject<HTMLDivElement>;
 }
 
 const Content = ({ messages, containerRef }: IContent) => {

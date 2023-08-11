@@ -1,7 +1,7 @@
 interface IMultiInput {
   value: string;
   placeholder?: string;
-  onChange: (e: any) => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export default function MultiInput({
