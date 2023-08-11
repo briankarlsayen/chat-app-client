@@ -1,27 +1,27 @@
-# React + TypeScript + Vite
+# Chat app client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to our cutting-edge realtime chat website! Say goodbye to the hassle of message storage on servers – we prioritize your privacy and data security. By utilizing WebSockets technology, we've built an ultra-responsive chat platform that ensures your messages are delivered instantly to your intended recipients.
 
-Currently, two official plugins are available:
+Here's what you can expect:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Realtime Communication:
 
-## Expanding the ESLint configuration
+Experience seamless conversations in real-time. No more waiting for messages to be sent or received. Enjoy instant, natural interactions with your friends, colleagues, or loved ones.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## No Message Storage:
 
-- Configure the top-level `parserOptions` property like this:
+Your privacy matters to us. We don't store any messages on our servers. Once a message is delivered, it's gone. This ensures that your conversations remain confidential, leaving no digital traces behind.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+## Effortless Collaboration:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Whether it's for work or play, our platform is designed to make collaboration a breeze. Connect with teammates, brainstorm, or simply catch up with friends without worrying about message retention.
+
+## Secure and Private:
+
+Our focus on privacy means your conversations are for your eyes only. We've implemented robust security measures to keep your data safe while you enjoy the benefits of real-time chatting.
+
+## User-Friendly Interface:
+
+Our website is intuitive and easy to use, so you can dive right into engaging conversations without any technical hurdles.
+
+Join us today and experience the future of realtime chatting – fast, private, and without any message storage concerns. Start communicating effortlessly, the way it should be.
