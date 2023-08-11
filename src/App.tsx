@@ -12,6 +12,8 @@ import { initializeUserToken } from './config/userToken';
 import { IChannel, ISelectedChannel, channelStore } from './store/ChannelStore';
 import Loading from './components/Loading';
 import ChatLogo from './assets/chat-app.png';
+import { configStore } from './store/ConfigStore';
+import { FaChevronLeft } from 'react-icons/fa';
 interface Socket {
   on(event: string, callback: (data: any) => void): any;
   emit(event: string, data: any): any;
@@ -32,6 +34,8 @@ export interface IMessage {
   type?: string;
 }
 
+const BREAK_POINT = 768;
+
 function App() {
   const {
     storeChannels,
@@ -41,8 +45,14 @@ function App() {
     leaveChannel,
     displaySelectedChannel,
   } = channelStore((state) => state);
+
+  const { changeSideModalStatus, sideModalOpen } = configStore(
+    (state) => state
+  );
+
   const [loading, setLoading] = useState(true);
   const [connection, setConnection] = useState<SocketConnect>();
+
   const {
     createMessage,
     displayChannelDetails,
@@ -114,17 +124,37 @@ function App() {
     }
   };
 
+  const checkWinWidth = () => {
+    if (window.innerWidth >= BREAK_POINT) {
+      changeSideModalStatus(true);
+    } else {
+      changeSideModalStatus(false);
+    }
+  };
+
+  useEffect(() => {
+    checkWinWidth();
+    window.addEventListener('resize', checkWinWidth);
+    return () => {
+      window.removeEventListener('resize', checkWinWidth);
+    };
+  }, []);
+
   return loading ? (
     <Loading loading={true} />
   ) : (
     <div className='flex h-screen'>
-      <SideBar
-        channels={channels}
-        pickChannel={pickChannel}
-        selectedChannel={selectedChannel}
-        displayChannelDetails={displayChannelDetails}
-        readChMessages={readChMessages}
-      />
+      {sideModalOpen ? (
+        <SideBar
+          channels={channels}
+          pickChannel={pickChannel}
+          selectedChannel={selectedChannel}
+          displayChannelDetails={displayChannelDetails}
+          readChMessages={readChMessages}
+          changeSideModalStatus={changeSideModalStatus}
+          sideModalOpen={sideModalOpen}
+        />
+      ) : null}
       <Content
         selectedChannel={selectedChannel}
         connection={connection}
@@ -143,6 +173,8 @@ interface ISideBar {
   ) => IChannelMessageDetails | null;
   readChMessages: (value?: string) => void;
   selectedChannel: ISelectedChannel | null;
+  changeSideModalStatus: (value: boolean) => void;
+  sideModalOpen: boolean;
 }
 
 const SideBar = ({
@@ -151,14 +183,19 @@ const SideBar = ({
   selectedChannel,
   displayChannelDetails,
   readChMessages,
+  changeSideModalStatus,
+  sideModalOpen,
 }: ISideBar) => {
   const handleSelectChannel = (channel?: IChannel | null) => {
     pickChannel(channel);
     readChMessages(channel?.label);
   };
   return (
-    <div className='max-w-xs border-r-2 w-full'>
-      <div className='h-16 w-full primary-blue-bg'>
+    <div className='max-w-xs border-r-2 w-full absolute md:static bg-white h-screen'>
+      <div className='flex items-center h-16 w-full primary-blue-bg pl-4'>
+        <button onClick={() => changeSideModalStatus(!sideModalOpen)}>
+          <FaChevronLeft />
+        </button>
         <img src={ChatLogo} className='h-full' />
       </div>
       <ul>

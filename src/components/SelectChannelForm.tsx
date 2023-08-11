@@ -50,7 +50,7 @@ export default function SelectChannelForm({
 
   return (
     <div>
-      <div className='pt-20 flex flex-col justify-center w-full h-full items-center'>
+      <div className='pt-20 flex flex-col justify-center w-full h-full items-center p-4'>
         <form
           onSubmit={handleEnter}
           className='flex flex-col gap-4 p-4 shadow-lg w-full max-w-xl rounded-md'
