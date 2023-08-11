@@ -30,3 +30,4 @@ Run app:
 ```
 npm run dev
 ```
+see server on https://github.com/briankarlsayen/chat-app-server
