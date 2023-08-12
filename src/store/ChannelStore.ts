@@ -50,15 +50,11 @@ const storeChannels = async ({ set }: any) => {
         return {
           _id: e._id,
           label: e.label,
+          name: e.name
         };
       });
       set({
-        channels: data.map((e: IChannel) => {
-          return {
-            _id: e._id,
-            label: e.label,
-          };
-        }),
+        channels: chList
       });
       return chList;
     }
@@ -72,7 +68,8 @@ const joinChannel = async ({ set, get, value }: IJoinChannel) => {
     routeName: '/channels',
     params: value,
   });
-  return set({ channels: [...ch, response.data.data] });
+  const addNameResponse = { ...response.data.data, name: value?.name }
+  return set({ channels: [...ch, addNameResponse] });
 };
 
 const leaveChannel = async ({ set, get }: IJoinChannel) => {
@@ -93,16 +90,10 @@ const leaveChannel = async ({ set, get }: IJoinChannel) => {
   return set({ channels: [...chList], selectedChannel: null });
 };
 
-const pickChannel = async ({ set, value }: ISetChannel) => {
-  const params = {
-    label: value?.label,
-    token: userToken,
-  };
-  const response = await routesPostApi({
-    routeName: '/channels/details',
-    params,
-  });
-  set({ selectedChannel: response.data });
+const pickChannel = async ({ set, get, value }: ISetChannel) => {
+  let channels = get().channels;
+  const selected = channels.find((channel: IChannel) => channel.label === value?.label)
+  set({ selectedChannel: selected ?? null });
 };
 
 const displaySelectedCh = ({ get }: IZustand) => {
@@ -115,7 +106,7 @@ const channelStoreObject = (set: any, get: any) => ({
   displaySelectedChannel: () => displaySelectedCh({ get }),
   storeChannels: () => storeChannels({ set }),
   joinChannel: (value: IJoinProps) => joinChannel({ set, get, value }),
-  pickChannel: (value?: IChannel | null) => pickChannel({ set, value }),
+  pickChannel: (value?: IChannel | null) => pickChannel({ set, get, value }),
   leaveChannel: () => leaveChannel({ set, get }),
 });
 

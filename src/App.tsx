@@ -45,6 +45,8 @@ function App() {
     leaveChannel,
     displaySelectedChannel,
   } = channelStore((state) => state);
+  console.log('channels', channels);
+  console.log('selectedChannel', selectedChannel);
 
   const { changeSideModalStatus, sideModalOpen, resizeScreen, isSmallScreen } =
     configStore((state) => state);
@@ -144,19 +146,17 @@ function App() {
   return loading ? (
     <Loading loading={true} />
   ) : (
-    <div className='flex h-screen'>
-      {sideModalOpen ? (
-        <SideBar
-          channels={channels}
-          pickChannel={pickChannel}
-          selectedChannel={selectedChannel}
-          displayChannelDetails={displayChannelDetails}
-          readChMessages={readChMessages}
-          changeSideModalStatus={changeSideModalStatus}
-          sideModalOpen={sideModalOpen}
-          isSmallScreen={isSmallScreen}
-        />
-      ) : null}
+    <div className='flex min-h-screen h-full relative'>
+      <SideBar
+        channels={channels}
+        pickChannel={pickChannel}
+        selectedChannel={selectedChannel}
+        displayChannelDetails={displayChannelDetails}
+        readChMessages={readChMessages}
+        changeSideModalStatus={changeSideModalStatus}
+        sideModalOpen={sideModalOpen}
+        isSmallScreen={isSmallScreen}
+      />
       <Content
         selectedChannel={selectedChannel}
         connection={connection}
@@ -196,10 +196,13 @@ const SideBar = ({
     if (isSmallScreen) changeSideModalStatus(false);
   };
   return (
-    <div className={sideModalOpen ? 'show-sidebar sidebar' : 'sidebar'}>
+    <div
+      id='sidebar'
+      className={sideModalOpen ? 'show-sidebar sidebar' : 'sidebar'}
+    >
       <div className='flex items-center h-16 w-full primary-blue-bg pl-4'>
         <FaChevronLeft
-          className='w-5 h-5 mr-2 cursor-pointer flex md:hidden'
+          className='w-5 h-5 mr-2 cursor-pointer flex md:hidden icon-primary-color'
           onClick={() => changeSideModalStatus(!sideModalOpen)}
         />
 
@@ -244,7 +247,7 @@ const Content = ({
   handleLeaveChannel,
 }: IContent) => {
   return (
-    <div className='w-full h-screen'>
+    <div className='w-full h-full  min-h-screen'>
       <Header
         title={selectedChannel?.label ?? 'Enter a channel'}
         isChannel={!!selectedChannel?.label}
