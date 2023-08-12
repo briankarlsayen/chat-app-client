@@ -17,14 +17,12 @@ export default function Header({
     (state) => state
   );
 
-  console.log('sideModalOpen', sideModalOpen);
-
   return (
     <div className='primary-blue-bg h-16 items-center flex pl-4 shadow-md justify-between'>
       <div className='flex items-center gap-1'>
         <FaBars
           onClick={() => changeSideModalStatus(!sideModalOpen)}
-          className='w-10 h-10 p-2 cursor-pointer flex md:hidden'
+          className='w-5 h-5 cursor-pointer flex md:hidden mr-2'
         />
         {isChannel && <FaHashtag color={'white'} />}
         <h3 className='text-white'>{title}</h3>

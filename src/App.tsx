@@ -11,7 +11,7 @@ import {
 import { initializeUserToken } from './config/userToken';
 import { IChannel, ISelectedChannel, channelStore } from './store/ChannelStore';
 import Loading from './components/Loading';
-import ChatLogo from './assets/chat-app.png';
+import ChatLogo from './assets/chat-app-2.jpg';
 import { configStore } from './store/ConfigStore';
 import { FaChevronLeft } from 'react-icons/fa';
 interface Socket {
@@ -46,9 +46,8 @@ function App() {
     displaySelectedChannel,
   } = channelStore((state) => state);
 
-  const { changeSideModalStatus, sideModalOpen } = configStore(
-    (state) => state
-  );
+  const { changeSideModalStatus, sideModalOpen, resizeScreen, isSmallScreen } =
+    configStore((state) => state);
 
   const [loading, setLoading] = useState(true);
   const [connection, setConnection] = useState<SocketConnect>();
@@ -127,8 +126,10 @@ function App() {
   const checkWinWidth = () => {
     if (window.innerWidth >= BREAK_POINT) {
       changeSideModalStatus(true);
+      resizeScreen(false);
     } else {
       changeSideModalStatus(false);
+      resizeScreen(true);
     }
   };
 
@@ -153,6 +154,7 @@ function App() {
           readChMessages={readChMessages}
           changeSideModalStatus={changeSideModalStatus}
           sideModalOpen={sideModalOpen}
+          isSmallScreen={isSmallScreen}
         />
       ) : null}
       <Content
@@ -175,6 +177,7 @@ interface ISideBar {
   selectedChannel: ISelectedChannel | null;
   changeSideModalStatus: (value: boolean) => void;
   sideModalOpen: boolean;
+  isSmallScreen: boolean;
 }
 
 const SideBar = ({
@@ -185,18 +188,22 @@ const SideBar = ({
   readChMessages,
   changeSideModalStatus,
   sideModalOpen,
+  isSmallScreen,
 }: ISideBar) => {
   const handleSelectChannel = (channel?: IChannel | null) => {
     pickChannel(channel);
     readChMessages(channel?.label);
+    if (isSmallScreen) changeSideModalStatus(false);
   };
   return (
-    <div className='max-w-xs border-r-2 w-full absolute md:static bg-white h-screen'>
+    <div className={sideModalOpen ? 'show-sidebar sidebar' : 'sidebar'}>
       <div className='flex items-center h-16 w-full primary-blue-bg pl-4'>
-        <button onClick={() => changeSideModalStatus(!sideModalOpen)}>
-          <FaChevronLeft />
-        </button>
-        <img src={ChatLogo} className='h-full' />
+        <FaChevronLeft
+          className='w-5 h-5 mr-2 cursor-pointer flex md:hidden'
+          onClick={() => changeSideModalStatus(!sideModalOpen)}
+        />
+
+        <img src={ChatLogo} className='h-[3rem]' />
       </div>
       <ul>
         <li className='sidebar-item' onClick={() => handleSelectChannel(null)}>
