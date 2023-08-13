@@ -103,8 +103,8 @@ const Message = ({ name, message, createdAt, type }: IMessage) => {
 const Chat = ({ name, message, createdAt }: IMessage) => {
   return (
     <div className='pb-2'>
-      <p className='text-blue-500'>
-        @{name}
+      <p className='text-blue-500 flex items-center'>
+        <span className='limit-text-lenght'>@{name}</span>
         <span className='pl-2 text-gray-400 text-sm'>{createdAt}</span>
       </p>
       <p>{message}</p>

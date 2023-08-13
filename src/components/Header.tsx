@@ -13,19 +13,29 @@ export default function Header({
   isChannel,
   handleLeaveChannel,
 }: IHeader) {
-  const { changeSideModalStatus, sideModalOpen } = configStore(
+  const { changeSideModalStatus, sideModalOpen, isSmallScreen } = configStore(
     (state) => state
   );
 
+  console.log('isSmallScreen', isSmallScreen);
+
   return (
-    <div className='primary-blue-bg h-16 items-center flex pl-4 shadow-md justify-between'>
-      <div className='flex items-center gap-1'>
-        <FaBars
-          onClick={() => changeSideModalStatus(!sideModalOpen)}
-          className='w-5 h-5 cursor-pointer flex md:hidden mr-2 icon-primary-color'
-        />
-        {isChannel && <FaHashtag color={'white'} />}
-        <h3 className='text-white'>{title}</h3>
+    <div className='primary-blue-bg h-16 items-center flex pl-4 shadow-md justify-between w-full'>
+      {isSmallScreen && (
+        <div>
+          <FaBars
+            onClick={() => changeSideModalStatus(!sideModalOpen)}
+            className='w-5 h-5 cursor-pointer flex md:hidden mr-2 icon-primary-color'
+          />
+        </div>
+      )}
+      <div className='flex items-center gap-1 overflow-auto'>
+        {isChannel && (
+          <span>
+            <FaHashtag color={'white'} />
+          </span>
+        )}
+        <p className='text-white limit-text-lenght'>{title}</p>
       </div>
       {isChannel && (
         <div className=' text-black p mr-4 rounded-md'>

@@ -45,8 +45,6 @@ function App() {
     leaveChannel,
     displaySelectedChannel,
   } = channelStore((state) => state);
-  console.log('channels', channels);
-  console.log('selectedChannel', selectedChannel);
 
   const { changeSideModalStatus, sideModalOpen, resizeScreen, isSmallScreen } =
     configStore((state) => state);
@@ -247,7 +245,7 @@ const Content = ({
   handleLeaveChannel,
 }: IContent) => {
   return (
-    <div className='w-full h-full  min-h-screen'>
+    <div className='w-full h-full  min-h-screen overflow-x-auto'>
       <Header
         title={selectedChannel?.label ?? 'Enter a channel'}
         isChannel={!!selectedChannel?.label}
