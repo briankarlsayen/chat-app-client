@@ -29,7 +29,7 @@ export default function Header({
           />
         </div>
       )}
-      <div className='flex items-center gap-1 overflow-auto'>
+      <div className='flex items-center gap-1 overflow-auto flex-1'>
         {isChannel && (
           <span>
             <FaHashtag color={'white'} />
