@@ -61,6 +61,7 @@ export default function SelectChannelForm({
             value={input.username}
             onChange={handleInputChange}
             required={true}
+            hasLenLimit={true}
           />
           <Input
             label='Channel'
@@ -68,6 +69,7 @@ export default function SelectChannelForm({
             value={input.channel}
             onChange={handleInputChange}
             required={true}
+            hasLenLimit={true}
           />
 
           <button type='submit' className='btn-blue primary-blue-bg'>

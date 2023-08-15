@@ -14,6 +14,7 @@ import Loading from './components/Loading';
 import ChatLogo from './assets/chat-app-2.jpg';
 import { configStore } from './store/ConfigStore';
 import { FaChevronLeft } from 'react-icons/fa';
+import ErrorPage from './pages/ErrorPage';
 interface Socket {
   on(event: string, callback: (data: any) => void): any;
   emit(event: string, data: any): any;
@@ -51,6 +52,7 @@ function App() {
 
   const [loading, setLoading] = useState(true);
   const [connection, setConnection] = useState<SocketConnect>();
+  const [isError, setError] = useState(false);
 
   const {
     createMessage,
@@ -73,6 +75,8 @@ function App() {
         });
       });
     } else {
+      setError(true);
+      setLoading(false);
       console.log('Unable to connect socket');
     }
   };
@@ -141,10 +145,10 @@ function App() {
     };
   }, []);
 
-  return loading ? (
-    <Loading loading={true} />
+  const content = isError ? (
+    <ErrorPage />
   ) : (
-    <div className='flex min-h-screen h-full relative'>
+    <div className={loading ? 'content opacity-0' : 'content opacity-100'}>
       <SideBar
         channels={channels}
         pickChannel={pickChannel}
@@ -163,6 +167,14 @@ function App() {
       />
     </div>
   );
+
+  return (
+    <>
+      <Loading loading={loading} />
+      {content}
+    </>
+  );
+  // return loading ? <Loading loading={true} /> : content;
 }
 
 interface ISideBar {
