@@ -174,7 +174,6 @@ function App() {
       {content}
     </>
   );
-  // return loading ? <Loading loading={true} /> : content;
 }
 
 interface ISideBar {
