@@ -95,6 +95,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log('loading');
     connected();
     saveUserToken();
   }, []);
