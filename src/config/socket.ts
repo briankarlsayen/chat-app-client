@@ -6,6 +6,7 @@ const delay = (delayInms: number) => {
 };
 
 export default async function connectSocket() {
+  console.log('socketUrl', socketUrl)
   const socketRes = io(socketUrl, {
     transports: ['websocket', 'polling'],
   });
