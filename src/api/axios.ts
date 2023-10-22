@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { url } from '../config/server';
+import { apiUrl } from '../config/server';
 
 const instance = axios.create({
-  baseURL: url,
+  baseURL: apiUrl,
 });
 
 export default instance;

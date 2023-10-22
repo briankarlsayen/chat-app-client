@@ -1,12 +1,11 @@
 import { io } from 'socket.io-client';
-import { url } from './server';
+import { socketUrl } from './server';
 
 const delay = (delayInms: number) => {
   return new Promise((resolve) => setTimeout(resolve, delayInms));
 };
 
 export default async function connectSocket() {
-  const socketUrl = `${url}/chat-app`;
   const socketRes = io(socketUrl, {
     transports: ['websocket', 'polling'],
   });
